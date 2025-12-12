@@ -28,6 +28,9 @@ yarn-error.log*
 # Ignore any compiled TypeScript or JavaScript files
 *.js
 *.map
+# But allow config files
+!fe/postcss.config.js
+!fe/tailwind.config.js
 
 # Ignore any dependencies' lock files
 package-lock.json
