@@ -1,2 +1,21 @@
-version: '3'
-# your services for the task
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./docker/mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 40s
+#     networks:
+#       - test-task-main
+# networks:
+#   test-task-main:
+#     driver: bridge
