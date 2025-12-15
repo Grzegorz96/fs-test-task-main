@@ -1,13 +1,41 @@
-import { mockData } from '../../mock/data';
 import { ProductCard } from '../cards/Product';
 import { Button } from '../button';
 import { useFilterContext } from '../../contexts/filters';
+import { useProducts } from '../../hooks/useProducts';
+import { ProductSkeleton } from './ProductSkeleton';
 import { ChevronDown } from 'react-feather';
 
 export const Products = () => {
   const { filters, query } = useFilterContext();
+  const { products, isLoading, error } = useProducts();
 
-  const searchByCode = mockData.filter((product) => {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-5 mx-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <ProductSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-8 mx-4">
+        <p className="text-center text-red-500 text-xl mb-4">
+          Wystąpił błąd podczas ładowania produktów
+        </p>
+        <p className="text-center text-gray-500 text-sm mb-4">{error.message}</p>
+        <Button
+          variant="primary"
+          value="Spróbuj ponownie"
+          onClick={() => window.location.reload()}
+        />
+      </div>
+    );
+  }
+
+  const searchByCode = products.filter((product) => {
     return product.code.toLowerCase().includes(query.toLowerCase());
   });
 
@@ -43,7 +71,7 @@ export const Products = () => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-5 mx-4">
         {sortedProducts.map((product) => (
           <ProductCard key={product.code} {...product} />
         ))}

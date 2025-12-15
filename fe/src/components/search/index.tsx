@@ -11,6 +11,7 @@ export const Search = () => {
 
   return (
     <input
+      name="search"
       placeholder={'Search'}
       value={query}
       onChange={handleChange}
