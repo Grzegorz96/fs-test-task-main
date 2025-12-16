@@ -47,7 +47,7 @@ This is RESTful application built with TypeScript using Express.js and MongoDB. 
 
    ```env
    # MongoDB Configuration
-   MONGODB_HOST=localhost
+   MONGODB_HOST=mongo
    MONGODB_PORT=27017
    MONGODB_DATABASE=products
    MONGO_INITDB_ROOT_USERNAME=admin
@@ -66,12 +66,10 @@ This is RESTful application built with TypeScript using Express.js and MongoDB. 
 
    # Development (with hot-reload)
 
+   ```bash
    docker compose -f docker-compose.dev.yml up
    or
    npm run dev:be
-
-   ```
-
    ```
 
 4. **Check status:**
