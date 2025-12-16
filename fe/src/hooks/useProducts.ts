@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IProduct } from '../interfaces/product';
-import { productService } from '../services/product.service';
+import { productService } from '../services/productService';
 
 interface UseProductsResult {
   products: IProduct[];

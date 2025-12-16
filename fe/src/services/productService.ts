@@ -54,7 +54,7 @@ export class ProductService {
   public async getAllProducts(): Promise<IProduct[]> {
     try {
       // Simulate network delay for testing skeleton loaders
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await fetch(`${this.baseUrl}/products`);
       if (!response.ok) {
         throw new Error(`Failed to fetch products: ${response.statusText}`);
