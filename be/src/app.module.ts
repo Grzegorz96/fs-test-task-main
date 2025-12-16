@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from "express";
-import cors from "cors";
 import { DatabaseModule } from "@/database/database.module";
 import { ProductModule } from "@/product/product.module";
 import {
@@ -8,15 +7,10 @@ import {
   apiRateLimiter,
   apiThrottler,
   securityMiddleware,
+  corsMiddleware,
 } from "@/middleware";
 import { Logger, LoggerInterface } from "@/logger";
-import {
-  HTTP_STATUS,
-  HTTP_MESSAGES,
-  ROUTES,
-  SERVER,
-  CORS,
-} from "@/utils/constants";
+import { HTTP_STATUS, HTTP_MESSAGES, ROUTES, SERVER } from "@/utils/constants";
 
 /**
  * Application module - configures Express application, connects to database and routes.
@@ -55,13 +49,7 @@ export class AppModule {
     this.app.use(securityMiddleware);
 
     // CORS configuration.
-    this.app.use(
-      cors({
-        origin: CORS.ALL_ORIGINS,
-        methods: CORS.METHODS,
-        allowedHeaders: CORS.ALLOWED_HEADERS,
-      })
-    );
+    this.app.use(corsMiddleware);
 
     // JSON body parser.
     this.app.use(express.json());
