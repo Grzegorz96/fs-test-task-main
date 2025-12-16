@@ -1,18 +1,33 @@
-import express, { Request, Response } from "express";
+import { AppModule } from "@/app.module";
+import { SERVER } from "@/utils/constants";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+/**
+ * Bootstrap function - creates application, initializes middleware, routes and starts server
+ */
+async function bootstrap(): Promise<void> {
+  try {
+    // Create application module.
+    const appModule = new AppModule();
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/test-task";
+    // Initialize database connection and seed if empty.
+    await appModule.connectToDatabase();
 
-app.use(express.json());
+    // Initialize middleware (must be before routes).
+    appModule.initializeMiddlewares();
 
-app.get("/health", (req: Request, res: Response) => {
-  res.status(200).json({ status: "ok", mongodb: MONGODB_URI });
-});
+    // Initialize routes (after middleware).
+    appModule.initializeRoutes();
 
-app.listen(PORT, () => {
-  console.log(`Serversssssss running on http://localhost:${PORT}`);
-  console.log(`MongoDB URI: ${MONGODB_URI}`);
-});
+    // Initialize error handling (must be after routes).
+    appModule.initializeErrorHandling();
+
+    // Start server.
+    appModule.start();
+  } catch (error) {
+    // Fallback to console if logger is not available during bootstrap.
+    console.error("Failed to start server:", error);
+    process.exit(SERVER.EXIT_CODE_ERROR);
+  }
+}
+
+void bootstrap();

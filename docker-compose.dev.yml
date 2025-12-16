@@ -30,13 +30,12 @@ services:
       - "3000:3000"
     volumes:
       - ./be/src:/app/src
+      - ./be/logs:/app/logs
     depends_on:
       mongo:
         condition: service_healthy
     environment:
       - NODE_ENV=development
-      - PORT=3000
-      - MONGODB_URI=mongodb://mongo:27017/test-task
     networks:
       - app
 

@@ -1,0 +1,83 @@
+/**
+ * Energy class type for product classification.
+ */
+export type EnergyClass = "A" | "B" | "C";
+
+/**
+ * Product capacity type.
+ */
+export type Capacity = 8 | 9 | 10.5;
+
+/**
+ * Product features type.
+ */
+export type Features =
+  | "Drzwi AddWash™"
+  | "Panel AI Control"
+  | "Silnik inwerterowy"
+  | "Wyświetlacz elektroniczny";
+
+/**
+ * Product price installment information.
+ */
+export interface IProductInstallment {
+  value: number;
+  period: number;
+}
+
+/**
+ * Product price information.
+ */
+export interface IProductPrice {
+  value: number;
+  currency: string;
+  installment: IProductInstallment;
+  validFrom: Date;
+  validTo: Date;
+}
+
+/**
+ * Product entity - domain model.
+ */
+export class Product {
+  public readonly id?: string;
+  public readonly image: string;
+  public readonly code: string;
+  public readonly name: string;
+  public readonly color: string;
+  public readonly capacity: Capacity;
+  public readonly dimensions: string;
+  public readonly features: Features[];
+  public readonly energyClass: EnergyClass;
+  public readonly price: IProductPrice;
+  public readonly createdAt?: Date;
+  public readonly updatedAt?: Date;
+
+  constructor(data: {
+    id?: string;
+    image: string;
+    code: string;
+    name: string;
+    color: string;
+    capacity: Capacity;
+    dimensions: string;
+    features: Features[];
+    energyClass: EnergyClass;
+    price: IProductPrice;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }) {
+    this.id = data.id;
+    this.image = data.image;
+    this.code = data.code;
+    this.name = data.name;
+    this.color = data.color;
+    this.capacity = data.capacity;
+    this.dimensions = data.dimensions;
+    this.features = data.features;
+    this.energyClass = data.energyClass;
+    this.price = data.price;
+    this.createdAt = data.createdAt;
+    this.updatedAt = data.updatedAt;
+  }
+}

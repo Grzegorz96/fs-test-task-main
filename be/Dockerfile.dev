@@ -2,18 +2,18 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files.
 COPY package.json ./
 COPY tsconfig.json ./
 
-# Install all dependencies (including devDependencies for development)
+# Install all dependencies (including devDependencies for development).
 RUN npm install
 
-# Copy source code (will be overridden by compose watch, but needed for initial startup)
+# Copy source code (will be overridden by compose watch, but needed for initial startup).
 COPY src ./src
 
-# Expose port
+# Expose port.
 EXPOSE 3000
 
-# Start application with hot reload
+# Start application with hot reload.
 CMD ["npm", "run", "dev"]
