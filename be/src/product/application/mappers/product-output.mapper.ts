@@ -18,7 +18,7 @@ export class ProductOutputMapper {
       color: product.color,
       capacity: product.capacity,
       dimensions: product.dimensions,
-      features: product.features,
+      features: [...product.features],
       energyClass: product.energyClass,
       price: {
         value: product.price.value,
@@ -27,8 +27,8 @@ export class ProductOutputMapper {
           value: product.price.installment.value,
           period: product.price.installment.period,
         },
-        validFrom: product.price.validFrom,
-        validTo: product.price.validTo,
+        validFrom: new Date(product.price.validFrom),
+        validTo: new Date(product.price.validTo),
       },
     };
   }

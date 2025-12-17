@@ -22,11 +22,20 @@ export class ProductDocumentMapper {
       color: document.color,
       capacity: document.capacity,
       dimensions: document.dimensions,
-      features: document.features,
+      features: [...document.features],
       energyClass: document.energyClass,
-      price: document.price,
-      createdAt: document.createdAt,
-      updatedAt: document.updatedAt,
+      price: {
+        value: document.price.value,
+        currency: document.price.currency,
+        installment: {
+          value: document.price.installment.value,
+          period: document.price.installment.period,
+        },
+        validFrom: new Date(document.price.validFrom),
+        validTo: new Date(document.price.validTo),
+      },
+      createdAt: document.createdAt ? new Date(document.createdAt) : undefined,
+      updatedAt: document.updatedAt ? new Date(document.updatedAt) : undefined,
     });
   }
 
@@ -52,9 +61,18 @@ export class ProductDocumentMapper {
       color: product.color,
       capacity: product.capacity,
       dimensions: product.dimensions,
-      features: product.features,
+      features: [...product.features],
       energyClass: product.energyClass,
-      price: product.price,
+      price: {
+        value: product.price.value,
+        currency: product.price.currency,
+        installment: {
+          value: product.price.installment.value,
+          period: product.price.installment.period,
+        },
+        validFrom: new Date(product.price.validFrom),
+        validTo: new Date(product.price.validTo),
+      },
     };
   }
 }

@@ -1,26 +1,12 @@
 import { Schema, model, Document } from "mongoose";
-import {
-  EnergyClass,
-  Capacity,
-  Features,
-  IProductPrice,
-} from "@/product/domain/entities/product.entity";
+import { IProductData } from "@/product/domain/entities/product.entity";
 import { PRODUCT } from "@/utils/constants";
 
 /**
  * Product document data - plain object for Mongoose operations.
+ * Derived from domain IProductData interface.
  */
-export interface ProductDocumentData {
-  image: string;
-  code: string;
-  name: string;
-  color: string;
-  capacity: Capacity;
-  dimensions: string;
-  features: Features[];
-  energyClass: EnergyClass;
-  price: IProductPrice;
-}
+export type ProductDocumentData = IProductData;
 
 /**
  * Product document interface for Mongoose.

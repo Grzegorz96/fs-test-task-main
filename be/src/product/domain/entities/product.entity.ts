@@ -37,6 +37,22 @@ export interface IProductPrice {
 }
 
 /**
+ * Base product data interface - core product properties without metadata.
+ * Used as foundation for other product types.
+ */
+export interface IProductData {
+  image: string;
+  code: string;
+  name: string;
+  color: string;
+  capacity: Capacity;
+  dimensions: string;
+  features: Features[];
+  energyClass: EnergyClass;
+  price: IProductPrice;
+}
+
+/**
  * Product entity - domain model.
  */
 export class Product {
@@ -53,20 +69,9 @@ export class Product {
   public readonly createdAt?: Date;
   public readonly updatedAt?: Date;
 
-  constructor(data: {
-    id?: string;
-    image: string;
-    code: string;
-    name: string;
-    color: string;
-    capacity: Capacity;
-    dimensions: string;
-    features: Features[];
-    energyClass: EnergyClass;
-    price: IProductPrice;
-    createdAt?: Date;
-    updatedAt?: Date;
-  }) {
+  constructor(
+    data: IProductData & { id?: string; createdAt?: Date; updatedAt?: Date }
+  ) {
     this.id = data.id;
     this.image = data.image;
     this.code = data.code;
