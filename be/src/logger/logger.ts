@@ -42,6 +42,7 @@ export class Logger implements LoggerInterface {
     }
 
     this.logger = this.createLogger();
+    this.logger.info("Logger initialized successfully");
   }
 
   /**
