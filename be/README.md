@@ -62,29 +62,37 @@ This is RESTful application built with TypeScript using Express.js and MongoDB. 
    LOG_FILE=true
    ```
 
-3. **Run the application with Docker Compose:**
+3. **Run `npm install` from the root directory of the project:**
+
+   This will automatically install dependencies for both frontend (`fe`) and backend (`be`) workspaces using npm workspaces.
+
+   ```bash
+   npm install
+   ```
+
+4. **Run the application with Docker Compose:**
 
    # Development (with hot-reload)
 
    ```bash
-   docker compose -f docker-compose.dev.yml up
-   or
    npm run dev:be
+   or
+   docker compose -f docker-compose.dev.yml up
    ```
 
-4. **Check status:**
+5. **Check status:**
 
    ```bash
    docker compose ps
    ```
 
-5. **Check logs:**
+6. **Check logs:**
 
    ```bash
    docker logs -f test-task-dev-backend-1
    ```
 
-6. **Stop the application:**
+7. **Stop the application:**
 
    ```bash
    docker compose -f docker-compose.dev.yml down
