@@ -49,7 +49,7 @@ This is RESTful application built with TypeScript using Express.js and MongoDB. 
    # MongoDB Configuration
    MONGODB_HOST=mongo
    MONGODB_PORT=27017
-   MONGODB_DATABASE=products
+   MONGODB_DATABASE=test-task
    MONGO_INITDB_ROOT_USERNAME=admin
    MONGO_INITDB_ROOT_PASSWORD=password
 
