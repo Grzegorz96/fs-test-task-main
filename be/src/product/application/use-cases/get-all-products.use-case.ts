@@ -1,16 +1,14 @@
-import {
-  ProductRepositoryPort,
-  GetAllProductsPort,
-} from "@/product/application/ports";
+import { GetAllProductsPort } from "@/product/application/input-ports";
 import { ProductOutputModel } from "@/product/application/models/product.output-model";
 import { ProductOutputMapper } from "@/product/application/mappers/product-output.mapper";
+import { ProductRepository } from "@/product/domain/repositories/product.repository";
 
 /**
  * Use case for getting all products.
  */
 export class GetAllProductsUseCase implements GetAllProductsPort {
   constructor(
-    private readonly productRepository: ProductRepositoryPort,
+    private readonly productRepository: ProductRepository,
     private readonly productOutputMapper: ProductOutputMapper
   ) {}
 

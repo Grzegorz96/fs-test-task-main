@@ -3,7 +3,7 @@ import {
   GetAllProductsPort,
   GetProductByCodePort,
   SeedProductsPort,
-} from "@/product/application/ports";
+} from "@/product/application/input-ports";
 import { ProductDtoMapper } from "@/product/interface/dto/product.dto";
 
 /**

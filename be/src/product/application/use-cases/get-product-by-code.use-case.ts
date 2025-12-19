@@ -1,17 +1,15 @@
-import {
-  ProductRepositoryPort,
-  GetProductByCodePort,
-} from "@/product/application/ports";
+import { GetProductByCodePort } from "@/product/application/input-ports";
 import { ProductOutputModel } from "@/product/application/models/product.output-model";
 import { ProductOutputMapper } from "@/product/application/mappers/product-output.mapper";
-import { ProductNotFoundError } from "@/product/application/errors/product-not-found.error";
+import { ProductNotFoundError } from "@/product/domain/errors/product-not-found.error";
+import { ProductRepository } from "@/product/domain/repositories/product.repository";
 
 /**
  * Use case for getting product by code.
  */
 export class GetProductByCodeUseCase implements GetProductByCodePort {
   constructor(
-    private readonly productRepository: ProductRepositoryPort,
+    private readonly productRepository: ProductRepository,
     private readonly productOutputMapper: ProductOutputMapper
   ) {}
 

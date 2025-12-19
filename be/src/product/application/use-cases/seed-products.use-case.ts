@@ -1,17 +1,15 @@
-import {
-  ProductRepositoryPort,
-  SeedProductsPort,
-} from "@/product/application/ports";
-import { Product } from "@/product/domain/entities/product.entity";
+import { SeedProductsPort } from "@/product/application/input-ports";
+import { ProductEntity } from "@/product/domain/entities/product.entity";
 import { seedProducts } from "@/product/application/data/seed-products";
 import { LoggerInterface } from "@/logger";
+import { ProductRepository } from "@/product/domain/repositories/product.repository";
 
 /**
  * Use case for seeding products in database.
  */
 export class SeedProductsUseCase implements SeedProductsPort {
   constructor(
-    private readonly productRepository: ProductRepositoryPort,
+    private readonly productRepository: ProductRepository,
     private readonly logger: LoggerInterface
   ) {}
 
@@ -37,7 +35,7 @@ export class SeedProductsUseCase implements SeedProductsPort {
       }
       this.logger.info("Database is empty, seeding with mock data...");
       for (const productData of seedProducts) {
-        const product = new Product(productData);
+        const product = new ProductEntity(productData);
         await this.productRepository.create(product);
       }
       this.logger.info(`Successfully seeded ${seedProducts.length} products`, {

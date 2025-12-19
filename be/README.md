@@ -131,21 +131,22 @@ The application has been built following **Clean Architecture** principles, whic
 **Example:**
 
 ```typescript
-// Port (abstraction) - Application Layer
-export interface ProductRepositoryPort {
-  findAll(): Promise<Product[]>;
-  findByCode(code: string): Promise<Product | null>;
+// Repository interface (abstraction) - Domain Layer
+export interface ProductRepository {
+  findAll(): Promise<ProductEntity[]>;
+  findByCode(code: string): Promise<ProductEntity | null>;
+  create(product: ProductEntity): Promise<ProductEntity>;
 }
 
-// Use Case depends on port, not implementation
+// Use Case depends on domain interface, not implementation
 export class GetProductByCodeUseCase {
   constructor(
-    private readonly productRepository: ProductRepositoryPort // ← Abstraction
+    private readonly productRepository: ProductRepository // ← Domain abstraction
   ) {}
 }
 
 // Implementation - Infrastructure Layer
-export class ProductRepository implements ProductRepositoryPort {
+export class MongoProductRepository implements ProductRepository {
   // Concrete MongoDB implementation
 }
 ```
@@ -160,8 +161,12 @@ export class ProductRepository implements ProductRepositoryPort {
 // ProductModule - manual dependency injection
 export class ProductModule {
   constructor(logger: LoggerInterface) {
-    // Creating dependencies
-    const repository = new ProductRepository(ProductModel, mapper);
+    // Creating infrastructure dependencies
+    const mongoProductMapper = new MongoProductMapper();
+    const repository = new MongoProductRepository(
+      MongoProductModel,
+      mongoProductMapper
+    );
 
     // Injecting into use case
     const useCase = new GetProductByCodeUseCase(repository, outputMapper);
@@ -176,14 +181,14 @@ export class ProductModule {
 
 **Application core (framework-independent):**
 
-- `domain/` - domain entities (pure TypeScript)
-- `application/` - use cases, ports (independent of Express/MongoDB)
-- `application/ports/` - abstractions (interfaces)
+- `domain/` - domain entities, repository interfaces, domain errors (pure TypeScript, no external dependencies)
+- `application/` - use cases, input ports, mappers (independent of Express/MongoDB)
+- `application/input-ports/` - use case contracts (interfaces)
 
 **Implementation details (can be swapped):**
 
-- `infrastructure/mongo/` - MongoDB implementation (can be swapped for PostgreSQL)
-- `interface/` - Express controllers, routes (can be swapped for GraphQL)
+- `infrastructure/persistance/mongo/` - MongoDB implementation (can be swapped for PostgreSQL, in-memory, etc.)
+- `interface/` - Express controllers, routes, DTOs (can be swapped for GraphQL, gRPC, etc.)
 
 **Benefits:**
 
@@ -217,27 +222,34 @@ be/src/
 │   └── throttler.middleware.ts
 │
 ├── product/                    # Product module (Clean Architecture)
-│   ├── domain/                # Domain layer
-│   │   └── entities/
-│   │       └── product.entity.ts
+│   ├── domain/                # Domain layer (pure, no external dependencies)
+│   │   ├── entities/          # Domain entities
+│   │   │   └── product.entity.ts
+│   │   ├── repositories/      # Repository interfaces (abstractions)
+│   │   │   └── product.repository.ts
+│   │   └── errors/            # Domain errors (pure, no HTTP dependencies)
+│   │       └── product-not-found.error.ts
 │   │
 │   ├── application/           # Application layer
-│   │   ├── ports/             # Ports (abstractions)
-│   │   │   ├── product.repository.port.ts
+│   │   ├── input-ports/       # Use case contracts (interfaces)
 │   │   │   ├── get-all-products.port.ts
-│   │   │   └── get-product-by-code.port.ts
-│   │   ├── use-cases/         # Use cases
+│   │   │   ├── get-product-by-code.port.ts
+│   │   │   └── seed-products.port.ts
+│   │   ├── use-cases/         # Use cases (business logic)
 │   │   │   ├── get-all-products.use-case.ts
-│   │   │   └── get-product-by-code.use-case.ts
+│   │   │   ├── get-product-by-code.use-case.ts
+│   │   │   └── seed-products.use-case.ts
 │   │   ├── models/            # Output models
 │   │   ├── mappers/           # Domain ↔ Output models mapping
-│   │   └── errors/            # Domain errors
+│   │   └── data/              # Seed data
 │   │
 │   ├── infrastructure/        # Infrastructure layer
-│   │   └── mongo/
-│   │       ├── models/        # Mongoose models
-│   │       ├── repositories/  # Port implementations
-│   │       └── mappers/       # MongoDB ↔ Domain mapping
+│   │   └── persistance/       # Persistence implementations
+│   │       └── mongo/         # MongoDB implementation
+│   │           ├── mongo-product.model.ts      # Mongoose model
+│   │           ├── mongo-product.repository.ts # Repository implementation
+│   │           ├── mongo-product.mapper.ts      # MongoDB ↔ Domain mapping
+│   │           └── index.ts                    # Module exports
 │   │
 │   ├── interface/             # Interface layer
 │   │   ├── controllers/       # Express controllers
@@ -283,6 +295,16 @@ The application is divided into independent modules:
 - Easy addition of new modules (e.g., UserModule, OrderModule)
 - Independent module testing
 - Ability to swap modules without affecting the rest of the application
+
+### Domain Layer Structure
+
+The domain layer is completely pure and framework-independent:
+
+- **Entities** (`domain/entities/`) - `ProductEntity` class representing business objects
+- **Repository Interfaces** (`domain/repositories/`) - `ProductRepository` interface defining data access contract
+- **Domain Errors** (`domain/errors/`) - Pure error classes without HTTP dependencies (e.g., `ProductNotFoundError`)
+
+Domain errors are mapped to HTTP responses in the Interface Layer (middleware), maintaining Clean Architecture principles.
 
 ---
 
@@ -345,8 +367,17 @@ The application implements the following security mechanisms:
 - Generic error messages for clients
 - Detailed logging for developers
 - MongoDB error handling (ValidationError, CastError, DuplicateKey)
+- Domain error mapping - pure domain errors (no HTTP dependencies) are mapped to HTTP responses in Interface Layer
 
-**Location:** `src/middleware/error-handler.middleware.ts`
+**Domain Errors:**
+
+- `ProductNotFoundError` - pure domain error without HTTP dependencies
+- Mapped to HTTP 404 in middleware (Interface Layer responsibility)
+
+**Location:**
+
+- Domain errors: `src/product/domain/errors/`
+- Error handler: `src/middleware/error-handler.middleware.ts`
 
 ---
 
@@ -467,7 +498,7 @@ GET /api/products/:code
 ```json
 {
   "status": 404,
-  "message": "Product not found: ABC123",
+  "message": "Product with code ... not found",
   "data": null,
   "timestamp": "2024-01-15T10:30:45.123Z"
 }

@@ -3,6 +3,7 @@ import { Error as MongooseError } from "mongoose";
 import { LoggerInterface } from "@/logger";
 import { HTTP_STATUS, HTTP_MESSAGES } from "@/utils/constants";
 import { createErrorResponse } from "@/utils/response-helpers";
+import { ProductNotFoundError } from "@/product/domain/errors/product-not-found.error";
 
 /**
  * Creates error handler middleware with logger.
@@ -29,10 +30,10 @@ export function createErrorHandlerMiddleware(
     }
     let status: number;
     let message: string;
-    // Check if error has custom status property (domain errors).
-    if ("status" in err && typeof err.status === "number") {
-      status = err.status;
-      message = err.message || HTTP_MESSAGES.INTERNAL_SERVER_ERROR;
+    // Handle custom domain errors.
+    if (err instanceof ProductNotFoundError) {
+      status = HTTP_STATUS.NOT_FOUND;
+      message = err.message;
     } else if (err instanceof MongooseError.ValidationError) {
       // Mongoose validation error - return generic message, log details.
       status = HTTP_STATUS.BAD_REQUEST;

@@ -11,7 +11,7 @@ export type ProductDocumentData = IProductData;
 /**
  * Product document interface for Mongoose.
  */
-export interface ProductDocument extends Document, ProductDocumentData {
+export interface MongoProductDocument extends Document, ProductDocumentData {
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,7 +19,7 @@ export interface ProductDocument extends Document, ProductDocumentData {
 /**
  * Product schema definition.
  */
-const productSchema = new Schema<ProductDocument>(
+const mongoProductSchema = new Schema<MongoProductDocument>(
   {
     image: {
       type: String,
@@ -95,7 +95,7 @@ const productSchema = new Schema<ProductDocument>(
 /**
  * Product model.
  */
-export const ProductModel = model<ProductDocument>(
+export const MongoProductModel = model<MongoProductDocument>(
   PRODUCT.MODEL_NAME,
-  productSchema
+  mongoProductSchema
 );

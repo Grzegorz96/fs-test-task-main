@@ -4,9 +4,11 @@ import {
   GetProductByCodeUseCase,
   SeedProductsUseCase,
 } from "@/product/application/use-cases";
-import { ProductModel } from "@/product/infrastructure/mongo/models/product.model";
-import { ProductRepository } from "@/product/infrastructure/mongo/repositories/product.repository";
-import { ProductDocumentMapper } from "@/product/infrastructure/mongo/mappers/product-document.mapper";
+import {
+  MongoProductModel,
+  MongoProductRepository,
+  MongoProductMapper,
+} from "@/product/infrastructure/persistance/mongo";
 import { ProductRoutes } from "@/product/interface/routes/product.routes";
 import { ProductController } from "@/product/interface/controllers/product.controller";
 import { ProductOutputMapper } from "@/product/application/mappers/product-output.mapper";
@@ -15,6 +17,8 @@ import { ProductDtoMapper } from "@/product/interface/dto/product.dto";
 
 /**
  * Product module - manages product domain initialization.
+ * Composes all product-related components following Clean Architecture principles.
+ * Uses dependency injection to wire up domain, application, infrastructure, and interface layers.
  */
 export class ProductModule {
   private readonly productController: ProductController;
@@ -23,15 +27,15 @@ export class ProductModule {
 
   constructor(logger: LoggerInterface) {
     this.logger = logger;
-    // Initialize mappers.
-    const productDocumentMapper = new ProductDocumentMapper();
+    // Initialize mappers - infrastructure and application layer mappers.
+    const mongoProductMapper = new MongoProductMapper();
     const productOutputMapper = new ProductOutputMapper();
     const productDtoMapper = new ProductDtoMapper();
 
-    // Initialize repository.
-    const productRepository = new ProductRepository(
-      ProductModel,
-      productDocumentMapper
+    // Initialize repository - MongoDB implementation of domain repository interface.
+    const productRepository = new MongoProductRepository(
+      MongoProductModel,
+      mongoProductMapper
     );
 
     // Initialize use cases.

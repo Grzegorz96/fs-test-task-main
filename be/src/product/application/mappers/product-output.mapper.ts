@@ -1,5 +1,5 @@
 import { ProductOutputModel } from "@/product/application/models/product.output-model";
-import { Product } from "@/product/domain/entities/product.entity";
+import { ProductEntity } from "@/product/domain/entities/product.entity";
 
 /**
  * Product output mapper - converts domain entities to output models.
@@ -10,7 +10,7 @@ export class ProductOutputMapper {
    * @param product - Domain entity.
    * @returns Output model.
    */
-  public toOutputModel(product: Product): ProductOutputModel {
+  public toOutputModel(product: ProductEntity): ProductOutputModel {
     return {
       image: product.image,
       code: product.code,
@@ -38,7 +38,7 @@ export class ProductOutputMapper {
    * @param products - Array of domain entities.
    * @returns Array of output models.
    */
-  public toOutputModels(products: Product[]): ProductOutputModel[] {
+  public toOutputModels(products: ProductEntity[]): ProductOutputModel[] {
     return products.map((product) => this.toOutputModel(product));
   }
 }

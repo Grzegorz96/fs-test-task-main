@@ -17,8 +17,6 @@ export const HTTP_MESSAGES = {
   PRODUCT_RETRIEVED_SUCCESSFULLY: "Product retrieved successfully",
   PRODUCTS_RETRIEVED_SUCCESSFULLY: "Products retrieved successfully",
   ROUTE_NOT_FOUND: "Route not found",
-  PRODUCT_NOT_FOUND: "Product not found",
-  BAD_REQUEST: "Bad request",
   VALIDATION_ERROR: "Validation error",
   INVALID_DATA_FORMAT: "Invalid data format",
   DUPLICATE_RECORD: "Record already exists",

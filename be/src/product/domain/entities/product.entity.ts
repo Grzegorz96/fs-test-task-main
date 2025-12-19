@@ -55,7 +55,7 @@ export interface IProductData {
 /**
  * Product entity - domain model.
  */
-export class Product {
+export class ProductEntity {
   public readonly id?: string;
   public readonly image: string;
   public readonly code: string;

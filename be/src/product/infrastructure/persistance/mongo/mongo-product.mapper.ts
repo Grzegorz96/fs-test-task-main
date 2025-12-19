@@ -1,20 +1,22 @@
-import { Product } from "@/product/domain/entities/product.entity";
+import { ProductEntity } from "@/product/domain/entities/product.entity";
 import {
-  ProductDocument,
+  MongoProductDocument,
   ProductDocumentData,
-} from "@/product/infrastructure/mongo/models/product.model";
+} from "@/product/infrastructure/persistance/mongo/mongo-product.model";
 
 /**
- * Product document mapper - converts Mongoose documents to domain entities.
+ * MongoDB product mapper - converts between MongoDB documents and domain entities.
+ * Implements deep copying to ensure immutability and prevent reference sharing between layers.
  */
-export class ProductDocumentMapper {
+export class MongoProductMapper {
   /**
-   * Converts Mongoose document to domain entity.
-   * @param document - Mongoose document.
-   * @returns Domain entity.
+   * Converts MongoDB document to domain entity.
+   * Creates deep copies of nested objects and arrays to ensure immutability.
+   * @param document - MongoDB document.
+   * @returns Domain entity with independent data copies.
    */
-  public toEntity(document: ProductDocument): Product {
-    return new Product({
+  public toEntity(document: MongoProductDocument): ProductEntity {
+    return new ProductEntity({
       id: document._id.toString(),
       image: document.image,
       code: document.code,
@@ -22,8 +24,10 @@ export class ProductDocumentMapper {
       color: document.color,
       capacity: document.capacity,
       dimensions: document.dimensions,
+      // Deep copy array to prevent reference sharing.
       features: [...document.features],
       energyClass: document.energyClass,
+      // Deep copy price object with new Date instances to ensure immutability.
       price: {
         value: document.price.value,
         currency: document.price.currency,
@@ -31,29 +35,32 @@ export class ProductDocumentMapper {
           value: document.price.installment.value,
           period: document.price.installment.period,
         },
+        // Create new Date instances to prevent reference sharing.
         validFrom: new Date(document.price.validFrom),
         validTo: new Date(document.price.validTo),
       },
+      // Create new Date instances if present.
       createdAt: document.createdAt ? new Date(document.createdAt) : undefined,
       updatedAt: document.updatedAt ? new Date(document.updatedAt) : undefined,
     });
   }
 
   /**
-   * Converts array of Mongoose documents to domain entities.
-   * @param documents - Array of Mongoose documents.
+   * Converts array of MongoDB documents to domain entities.
+   * @param documents - Array of MongoDB documents.
    * @returns Array of domain entities.
    */
-  public toEntities(documents: ProductDocument[]): Product[] {
+  public toEntities(documents: MongoProductDocument[]): ProductEntity[] {
     return documents.map((document) => this.toEntity(document));
   }
 
   /**
-   * Converts domain entity to plain object for Mongoose operations.
+   * Converts domain entity to plain object for MongoDB operations.
+   * Creates deep copies of nested objects and arrays to ensure immutability.
    * @param product - Domain entity.
-   * @returns Plain object for Mongoose.
+   * @returns Plain object for MongoDB with independent data copies.
    */
-  public toDocumentData(product: Product): ProductDocumentData {
+  public toDocumentData(product: ProductEntity): ProductDocumentData {
     return {
       image: product.image,
       code: product.code,
@@ -61,8 +68,10 @@ export class ProductDocumentMapper {
       color: product.color,
       capacity: product.capacity,
       dimensions: product.dimensions,
+      // Deep copy array to prevent reference sharing.
       features: [...product.features],
       energyClass: product.energyClass,
+      // Deep copy price object with new Date instances to ensure immutability.
       price: {
         value: product.price.value,
         currency: product.price.currency,
@@ -70,6 +79,7 @@ export class ProductDocumentMapper {
           value: product.price.installment.value,
           period: product.price.installment.period,
         },
+        // Create new Date instances to prevent reference sharing.
         validFrom: new Date(product.price.validFrom),
         validTo: new Date(product.price.validTo),
       },
