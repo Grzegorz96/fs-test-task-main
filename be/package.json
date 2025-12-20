@@ -2,7 +2,7 @@
   "name": "express-server-ts",
   "version": "1.0.0",
   "description": "Backend for the Full Stack Test Task",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/index.ts",
