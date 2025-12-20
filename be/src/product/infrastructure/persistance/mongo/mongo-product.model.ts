@@ -1,25 +1,28 @@
-import { Schema, model, Document } from "mongoose";
-import { IProductData } from "@/product/domain/entities/product.entity";
+import { Schema, model, HydratedDocument } from "mongoose";
 import { PRODUCT } from "@/utils/constants";
+import { IProductData } from "@/product/domain/entities/product.entity";
 
 /**
- * Product document data - plain object for Mongoose operations.
- * Derived from domain IProductData interface.
+ * ProductSchemaType - schema type for the Product schema.
  */
-export type ProductDocumentData = IProductData;
+export type ProductSchemaType = IProductData;
 
 /**
- * Product document interface for Mongoose.
+ * MongoTimestamps - timestamps interface for the Product schema.
  */
-export interface MongoProductDocument extends Document, ProductDocumentData {
-  createdAt?: Date;
-  updatedAt?: Date;
+export interface MongoTimestamps {
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
- * Product schema definition.
+ * MongoProductDocument - hydrated document type for the Product schema.
  */
-const mongoProductSchema = new Schema<MongoProductDocument>(
+export type MongoProductDocument = HydratedDocument<
+  ProductSchemaType & MongoTimestamps
+>;
+
+const MongoProductSchema = new Schema<MongoProductDocument>(
   {
     image: {
       type: String,
@@ -93,9 +96,9 @@ const mongoProductSchema = new Schema<MongoProductDocument>(
 );
 
 /**
- * Product model.
+ * MongoProductModel - model for the Product schema.
  */
 export const MongoProductModel = model<MongoProductDocument>(
   PRODUCT.MODEL_NAME,
-  mongoProductSchema
+  MongoProductSchema
 );

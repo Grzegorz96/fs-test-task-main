@@ -1,7 +1,7 @@
 import { ProductEntity } from "@/product/domain/entities/product.entity";
 import {
   MongoProductDocument,
-  ProductDocumentData,
+  ProductSchemaType,
 } from "@/product/infrastructure/persistance/mongo/mongo-product.model";
 
 /**
@@ -15,7 +15,7 @@ export class MongoProductMapper {
    * @param document - MongoDB document.
    * @returns Domain entity with independent data copies.
    */
-  public toEntity(document: MongoProductDocument): ProductEntity {
+  public toDomainEntity(document: MongoProductDocument): ProductEntity {
     return new ProductEntity({
       id: document._id.toString(),
       image: document.image,
@@ -39,9 +39,6 @@ export class MongoProductMapper {
         validFrom: new Date(document.price.validFrom),
         validTo: new Date(document.price.validTo),
       },
-      // Create new Date instances if present.
-      createdAt: document.createdAt ? new Date(document.createdAt) : undefined,
-      updatedAt: document.updatedAt ? new Date(document.updatedAt) : undefined,
     });
   }
 
@@ -50,17 +47,17 @@ export class MongoProductMapper {
    * @param documents - Array of MongoDB documents.
    * @returns Array of domain entities.
    */
-  public toEntities(documents: MongoProductDocument[]): ProductEntity[] {
-    return documents.map((document) => this.toEntity(document));
+  public toDomainEntities(documents: MongoProductDocument[]): ProductEntity[] {
+    return documents.map((document) => this.toDomainEntity(document));
   }
 
   /**
-   * Converts domain entity to plain object for MongoDB operations.
+   * Converts domain entity to schema data for MongoDB operations.
    * Creates deep copies of nested objects and arrays to ensure immutability.
    * @param product - Domain entity.
-   * @returns Plain object for MongoDB with independent data copies.
+   * @returns Schema data for MongoDB with independent data copies.
    */
-  public toDocumentData(product: ProductEntity): ProductDocumentData {
+  public toDocumentSchema(product: ProductEntity): ProductSchemaType {
     return {
       image: product.image,
       code: product.code,

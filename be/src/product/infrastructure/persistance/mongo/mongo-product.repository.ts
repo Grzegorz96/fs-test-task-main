@@ -21,7 +21,7 @@ export class MongoProductRepository implements ProductRepository {
    */
   async findAll(): Promise<ProductEntity[]> {
     const documents = await this.productModel.find();
-    return this.mongoProductMapper.toEntities(documents);
+    return this.mongoProductMapper.toDomainEntities(documents);
   }
 
   /**
@@ -31,7 +31,7 @@ export class MongoProductRepository implements ProductRepository {
    */
   async findByCode(code: string): Promise<ProductEntity | null> {
     const document = await this.productModel.findOne({ code });
-    return document ? this.mongoProductMapper.toEntity(document) : null;
+    return document ? this.mongoProductMapper.toDomainEntity(document) : null;
   }
 
   /**
@@ -40,9 +40,10 @@ export class MongoProductRepository implements ProductRepository {
    * @returns Promise with created product entity.
    */
   async create(product: ProductEntity): Promise<ProductEntity> {
-    const documentData = this.mongoProductMapper.toDocumentData(product);
-    const document = new this.productModel(documentData);
+    const documentSchemaData =
+      this.mongoProductMapper.toDocumentSchema(product);
+    const document = new this.productModel(documentSchemaData);
     const saved = await document.save();
-    return this.mongoProductMapper.toEntity(saved);
+    return this.mongoProductMapper.toDomainEntity(saved);
   }
 }

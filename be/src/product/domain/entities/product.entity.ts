@@ -66,12 +66,8 @@ export class ProductEntity {
   public readonly features: Features[];
   public readonly energyClass: EnergyClass;
   public readonly price: IProductPrice;
-  public readonly createdAt?: Date;
-  public readonly updatedAt?: Date;
 
-  constructor(
-    data: IProductData & { id?: string; createdAt?: Date; updatedAt?: Date }
-  ) {
+  constructor(data: IProductData & { id?: string }) {
     this.id = data.id;
     this.image = data.image;
     this.code = data.code;
@@ -82,7 +78,5 @@ export class ProductEntity {
     this.features = data.features;
     this.energyClass = data.energyClass;
     this.price = data.price;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
   }
 }
